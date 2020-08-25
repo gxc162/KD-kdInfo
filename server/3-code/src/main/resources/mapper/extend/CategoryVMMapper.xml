@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.apps.cms.dao.extend.CategoryVMMapper">
+    <select id="selectAll" resultMap="CategoryVMResultMap">
+ 		select * 
+ 		from cms_category
+ 	</select>
+
+    <select id="loadUserByUsername" resultMap="CategoryVMResultMap">
+ 		select *
+ 		from cms_category
+ 		where
+        name=#{name}
+ 	</select>
+
+
+    <!-- 定义结果集 -->
+    <resultMap type="com.briup.apps.cms.bean.extend.CategoryVM" id="CategoryVMResultMap">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="comment" jdbcType="VARCHAR" property="comment"/>
+        <result column="no" jdbcType="INTEGER" property="no"/>
+        <association
+                column="parent_id"
+                property="parent"
+                select="com.briup.apps.cms.dao.CategoryMapper.selectByPrimaryKey">
+        </association>
+    </resultMap>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

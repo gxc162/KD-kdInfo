@@ -1,0 +1,27 @@
+@charset "UTF-8";
+html {
+  font: normal normal '微软雅黑','Microsoft YaHei';
+  color: #666;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+a {
+  color: #666;
+  text-decoration: none;
+}
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
+div.line {
+  clear: both;
+}
+
+.article img {
+  width: 100%;
+}

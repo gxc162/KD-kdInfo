@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.apps.cms.dao.extend.ArticleVMMapper">
+    <select id="selectById" resultMap="ArticleVMResultMap">
+ 		select * 
+ 		from cms_article
+ 		where id = #{id}
+ 	</select>
+
+    <select id="selectAllNoPage" resultMap="ArticleVMResultMap">
+        select *
+        from cms_article
+        where 1= 1
+        <if test="categoryId != null">
+            AND category_id = #{categoryId}
+        </if>
+        <if test="keywords != null">
+            AND title like #{keywords}
+        </if>
+    </select>
+    <select id="selectAll" resultMap="ArticleVMResultMap">
+        select *
+        from cms_article
+        where 1= 1
+        <if test="categoryId != null">
+            AND category_id = #{categoryId}
+        </if>
+        <if test="keywords != null">
+            AND title like #{keywords}
+        </if>
+        <if test=" beginTime!=null and beginTime!=''">
+            AND publishTime &gt;= CONCAT('','${beginTime}',' 00:00:00')
+        </if>
+        <if test=" endTime!=null and endTime!=''">
+            AND publishTime &lt;= CONCAT('','${endTime}',' 23:59:59')
+        </if>
+        limit ${page*pageSize},${pageSize}
+    </select>
+    <select id="count" resultType="long">
+        select count(*)
+        from cms_article
+        where 1= 1
+        <if test="categoryId != null">
+            AND category_id = #{categoryId}
+        </if>
+        <if test="keywords != null">
+            AND title like #{keywords}
+        </if>
+        <if test="beginTime!=null and beginTime!=''">
+            AND publishTime &gt;= CONCAT('','${beginTime}',' 00:00:00')
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND publishTime &lt;= CONCAT('','${endTime}',' 23:59:59')
+        </if>
+
+    </select>
+
+    <!-- 定义结果集 -->
+    <resultMap type="com.briup.apps.cms.bean.extend.ArticleVM" id="ArticleVMResultMap">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="listStyle" jdbcType="VARCHAR" property="liststyle"/>
+        <result column="publishTime" jdbcType="VARCHAR" property="publishtime"/>
+        <result column="readTimes" jdbcType="VARCHAR" property="readtimes"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="thumbUp" jdbcType="INTEGER" property="thumbup"/>
+        <result column="thumbDown" jdbcType="INTEGER" property="thumbdown"/>
+
+<!--        <result column="user_id" jdbcType="INTEGER" property="author"/>-->
+        <association
+                column="user_id"
+                property="author"
+                select="com.briup.apps.cms.dao.UserMapper.selectByPrimaryKey">
+        </association>
+
+<!--        <association-->
+<!--                column="music"-->
+<!--                property="music"-->
+<!--                select="com.briup.apps.cms.dao.CMSFileMapper.selectByPrimaryKey">-->
+<!--        </association>-->
+<!--        <association-->
+<!--                column="video"-->
+<!--                property="video"-->
+<!--                select="com.briup.apps.cms.dao.CMSFileMapper.selectByPrimaryKey">-->
+<!--        </association>-->
+
+        <association
+                column="category_id"
+                property="category"
+                select="com.briup.apps.cms.dao.CategoryMapper.selectByPrimaryKey">
+        </association>
+        <collection
+                column="id"
+                property="comments"
+                ofType="com.briup.apps.cms.bean.Comment"
+                select="com.briup.apps.cms.dao.extend.CommentVMMapper.selectCommentByArticleId">
+        </collection>
+        <collection
+                column="id"
+                property="articleFileVMs"
+                javaType="ArrayList"
+                ofType="com.briup.apps.cms.bean.extend.ArticleFileVM"
+                select="com.briup.apps.cms.dao.extend.ArticleFileVMMapper.selectByArticleId">
+        </collection>
+
+    </resultMap>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>看点咨询精选</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<!-- jquery -->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
+<link >
+<style>
+	html {
+	  font: normal normal '微软雅黑','Microsoft YaHei';
+	  color: #666;
+	}
+	
+	body {
+	  margin: 0;
+	  padding: 0;
+	}
+	a {
+	  color: #666;
+	  text-decoration: none;
+	}
+	.text-left {
+	  text-align: left;
+	}
+	.text-right {
+	  text-align: right;
+	}
+	div.line {
+	  clear: both;
+	}
+	
+	.article img {
+	  width: 100%;
+	}
+	h1,h2,h3,ul,li,p {
+	  margin: 0;
+	  padding: 0;
+	}
+	ul,ol {
+	  list-style: none;
+	}
+	  /* 列表样式开始 */
+	.list {
+	  border-bottom: 1px solid #eded;
+	  box-shadow:  0 2px 3px rgba(0,0,0,0.1);
+	  position: relative;
+	  overflow-x: auto;
+	}
+	.list > ul {
+	  width: 600px;
+	  margin: 0 auto;
+	 
+	}
+	.list > ul::after {
+	  content: "";
+	  clear: both;
+	  display: block;
+	}
+	
+	.list > ul > li {
+	  float: left;
+	  line-height: 3em;
+	  width: 60px;
+	  text-align: center;
+	  position: relative;
+	}
+	.list > ul > li.current::after {
+	  height: 2px;
+	  width: 1.6em;
+	  margin-left: -.8em;
+	  bottom: 0;
+	  left: 50%;
+	  content: "";
+	  display: block;
+	  background: lightsteelblue;
+	  position: absolute;
+	}
+	
+	/* 列表样式结束 */
+	/* 内容开始 */
+	.content-wrapper {
+	  background-color: #e7e8eb;
+	}
+	.content {
+	  max-width: 760px;
+	  margin: 0 auto;
+	  background: #ffffff;
+	  padding: 0 1em;
+	}
+	/* 列表样式开始 */
+	.style-one,
+	.style-two {
+	  border-bottom: 1px solid #ededed;
+	  padding: .5em 0;
+	}
+	.style-one > .title {
+	  padding: .5em 0;
+	}
+	.style-one .title a,
+	.style-two .title a {
+	  color: #000000;
+	}
+	.style-one .info,
+	.style-two .info {
+	  font-size: 12px;
+	}
+	
+	.style-one > .img-list::after{
+	  content: "";
+	  display: block;
+	  clear: both;
+	}
+	.style-one > .img-list > li{
+	  float: left;
+	  width: 33%;
+	  margin-right: .5%;
+	}
+	.style-one > .img-list > li:last-child {
+	  margin-right: 0;
+	}
+	.img-list > li img{
+	  width: 100%;
+	}
+	.style-one > .info {
+	  display: flex;
+	}
+	.style-one > .info > div {
+	  flex: 1;
+	}
+	/* 列表样式结束 */
+	/* 列表样式2开始 */
+	.style-two {
+	  position: relative;
+	}
+	.style-two .title{
+	  width: 67%;
+	  float: left;
+	}
+	.style-two .img-list {
+	  width: 33%;
+	  float: right;
+	}
+	.style-two .img-list > li:first-child~li {
+	  display: none;
+	}
+	.style-two > .info {
+	  position: absolute;
+	  bottom: 1em;
+	  width: 67%;
+	  display: flex;
+	}
+	.style-two > .info > div {
+	  flex: 1;
+	}
+	.style-two > .info > div.info-right{
+	  padding-right: .5em;
+	}
+	
+	/* 内容结束 */
+	</style>
+
+</head>
+<body>
+	<div class="cc">
+		<!-- 列表 -->
+	    <div class="list">
+	      <ul>
+	        <li :class="c.id == category?'current':''" v-for="c in categories" :key="c.id" @click="toList(c)"><a href="javascript:void(0);">{{c.name}}</a></li>
+	      </ul>
+	    </div>
+	    <!-- 列表结束 -->
+	    <!-- 内容区 -->
+	    <div class="content-wrapper">
+	      <ul class="content">
+	        <!-- 列表项 -->
+	        <li v-for="article in articles" :key="article.id" :class="article.liststyle" @click="toArticle(article.id)">
+	          <!-- 标题 -->
+	          <div class="title"><a href="javascript:void(0);"> {{article.title}}</a></div>
+	          <!-- 列表缩略图 -->
+	          <ul class="img-list">
+	            <li v-for="file in article.articleFileVMs" :key="file.id"><a href="javascript:void(0);"><img :src="fileBase+'/'+file.cmsFile.groupname+'/'+file.cmsFile.id" alt=""></a></li>
+	          </ul>
+	          <div class="line" v-if="article.liststyle=='style-two'"></div>
+	          <!-- 信息 -->
+	          <div class="info">
+	            <div class="info-left text-left"><a href="javascript:void(0);">{{article.category.name}}</a></div>
+	            <div class="info-right text-right"><a href="javascript:void(0);">{{article.readtimes}}阅读</a></div>
+	          </div>
+	        </li>
+	        <!-- 列表项结束 -->
+	      </ul>
+	    </div>
+	    <!-- 内容区结束 -->
+	</div>
+
+	<script>
+		var base = 'http://39.108.81.60:8099';
+		var fileBase = 'http://39.108.81.60:8888'
+		new Vue({
+			el:'.cc',
+			data:{
+				msg:'hello world',
+				category:1,
+				categories:[],  //栏目相关数据
+			    articles:[]     //文章数据
+			},
+			created(){
+				var search = window.location.search;	
+				if(search){
+					var query = {};
+					search = search.substr(search.indexOf('?')+1);
+					var list = search.split("&");
+					for(var key  in list){
+						var val = list[key];
+						var arr = val.split('=');
+						console.log(arr);
+						query[arr[0]] = arr[1];
+					}
+					//query被解析出来
+					console.log(query);
+					//加载列表
+					this.loadCategory();
+					this.category = query.id;
+					//3. 加载相关的文章
+				    this.loadArticlesByCategoryId(query.id);
+				}
+			},
+			methods:{
+			    // 加载所有分类
+			    loadCategory:function(){
+			      var v = this;
+			      var url = base + "/index/findAllCategory";
+			      $.getJSON(url,function(result){
+			        v.categories = result.data;
+			      });
+			    },
+			    // 通过categoryId加载文章信息
+			    loadArticlesByCategoryId:function(id){
+			      var v = this;
+			      var url = base+"/index/findArticleByCategoryId?categoryId="+id;
+			      $.getJSON(url,function(result){
+			        v.articles = result.data;
+			      });
+			    },
+			    // 跳转列表
+			    toList(category){
+			      category.current = true;
+			      var id = category.id;
+			      window.location = "/jump/toList?id="+id
+			    },
+			    // 跳转文章
+			    toArticle(id){
+			      window.location = "/jump/toContent?categoryId="+this.category+"&articleId="+id
+			    }
+			  }
+		});
+	</script>
+
+
+</body>
+</html>

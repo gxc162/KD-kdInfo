@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.apps.cms.dao.extend.UserExtendMapper">
+    <select id="loadUserByUsername" resultType="com.briup.apps.cms.bean.User">
+        SELECT * FROM cms_user WHERE username=#{username}
+    </select>
+    <select id="loadUserByUsernameExtend" resultType="com.briup.apps.cms.bean.extend.UserExtend">
+        SELECT * FROM cms_user WHERE username=#{username}
+    </select>
+    <insert id="reg" useGeneratedKeys="true" keyProperty="id">
+     insert into cms_user (id, username, nickname,
+      password, enabled, email,
+      userface, regTime, role
+      )
+    values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR},
+      #{password,jdbcType=VARCHAR}, #{enabled,jdbcType=BIT}, #{email,jdbcType=VARCHAR},
+      #{userface,jdbcType=VARCHAR}, #{regtime,jdbcType=TIMESTAMP}, #{role,jdbcType=VARCHAR}
+      )
+    </insert>
+    <update id="updateUserEmail">
+        UPDATE cms_user set email=#{email} WHERE id=#{id}
+    </update>
+    <select id="getUserByNickname" resultMap="BaseResultMap">
+        SELECT u.*,r.`id` AS rid,r.`name` AS rname
+        FROM cms_user u,cms_roles r,cms_roles_user ru
+        WHERE u.`id`=ru.`uid` AND
+        r.`id`=ru.`rid` AND u.`id` NOT IN(SELECT u.`id` FROM user u,roles_user ru WHERE u.`id`=ru.`uid` AND ru.`rid`=1)
+        <choose>
+            <when test="nickname!=null and nickname!=''">
+                and u.nickname like concat('%',#{nickname},'%') ORDER BY u.`id`
+            </when>
+            <otherwise>
+                ORDER BY u.`id` limit 20
+            </otherwise>
+        </choose>
+    </select>
+    <select id="getUserById" resultMap="BaseResultMap">
+        SELECT u.*,r.`id` AS rid,r.`name` AS rname 
+        FROM cms_user u,cms_roles r,cms_roles_user ru 
+        WHERE u.`id`=ru.`uid` AND
+        r.`id`=ru.`rid` AND u.`id`=#{id}
+    </select>
+    <resultMap id="BaseResultMap" type="com.briup.apps.cms.bean.User">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="nickname" property="nickname"/>
+        <result column="password" property="password"/>
+        <result column="enabled" property="enabled"/>
+        <result column="email" property="email"/>
+        <result column="userface" property="userface"/>
+        <result column="regTime" property="regTime"/>
+        <collection property="roles" ofType="com.briup.apps.cms.bean.Role">
+            <id column="rid" property="id"/>
+            <result column="rname" property="name"/>
+        </collection>
+    </resultMap>
+    <select id="getAllRole" resultType="com.briup.apps.cms.bean.Role">
+        select * from cms_roles;
+    </select>
+    <update id="updateUserEnabled">
+        UPDATE cms_user set enabled=#{enabled} WHERE id=#{uid}
+    </update>
+    <delete id="deleteUserById">
+        DELETE FROM cms_user WHERE id=#{id}
+    </delete>
+    <delete id="deleteUserRolesByUid">
+        DELETE FROM cms_roles_user WHERE uid=#{id}
+    </delete>
+    <insert id="setUserRoles">
+        INSERT INTO cms_roles_user(rid,uid) VALUES
+        <foreach collection="rids" separator="," item="rid">
+            (#{rid},#{id})
+        </foreach>
+    </insert>
+</mapper>

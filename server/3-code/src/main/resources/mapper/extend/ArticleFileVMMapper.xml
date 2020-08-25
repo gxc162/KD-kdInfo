@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.apps.cms.dao.extend.ArticleFileVMMapper">
+	<select id="selectByArticleId" parameterType="long" resultMap="ArticleFileVMResultMap">
+ 		select caf.id id,caf.article_id articleId, caf.file_id file_id
+ 		from cms_article_file caf,cms_file cf
+ 		where cf.id = caf.file_id
+ 		and caf.article_id = #{id}
+ 		<!-- select * 
+ 		from cms_article_file caf
+ 		where  caf.article_id = #{id} -->
+ 	</select>
+ 	
+ 	
+ 	<!-- 定义结果集 -->
+ 	<resultMap type="com.briup.apps.cms.bean.extend.ArticleFileVM" id="ArticleFileVMResultMap">
+ 		<id column="id" jdbcType="BIGINT" property="id" />
+	    <result column="articleId" jdbcType="BIGINT" property="articleId" />
+	   	<association 
+ 			column="file_id" 
+ 			property="cmsFile"
+ 			select="com.briup.apps.cms.dao.CMSFileMapper.selectByPrimaryKey">
+ 		</association>
+ 	</resultMap>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.apps.cms.dao.RolesMapper">
+    <insert id="addRoles">
+        INSERT INTO cms_roles_user VALUES
+        <foreach collection="roles" item="role" separator=",">
+            (null,#{role},#{uid})
+        </foreach>
+    </insert>
+    <select id="getRolesByUid" parameterType="long" resultType="com.briup.apps.cms.bean.Role">
+        SELECT r.* 
+        FROM cms_roles r,cms_roles_user ru 
+        WHERE r.`id`=ru.`rid` AND ru.`uid`=#{uid}
+    </select>
+</mapper>

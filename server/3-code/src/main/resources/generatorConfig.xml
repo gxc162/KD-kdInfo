@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<!-- mybatis-generator的核心配置文件 -->
+<generatorConfiguration>
+
+    <classPathEntry
+            location="D:/apache-maven-3.3.9/maven/repo/mysql/mysql-connector-java/5.1.46/mysql-connector-java-5.1.46.jar"/>
+    <context id="DB2Tables" targetRuntime="MyBatis3">
+        <!-- MySQL分页插件 -->
+        <plugin type="com.itfsw.mybatis.generator.plugins.LimitPlugin"/>
+
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://106.15.75.81:3306/cms"
+                        userId="root"
+                        password="rootSH123">
+        </jdbcConnection>
+
+        <!--指定生成的类型为java类型，避免数据库中number等类型字段 -->
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+        <!--自动生成的实体的存放包路径 -->
+        <javaModelGenerator targetPackage="com.briup.apps.cms.bean" targetProject="./src/main/java">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <!--自动生成的*Mapper.xml文件存放路径 -->
+        <sqlMapGenerator targetPackage="mapper" targetProject="./src/main/resources">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+
+        <!--自动生成的*Mapper.java存放路径 -->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.briup.apps.cms.dao" targetProject="./src/main/java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+
+        <!-- 映射配置 -->
+        <!--  <table tableName="cms_category" domainObjectName="Category" ></table>
+        <table tableName="cms_article" domainObjectName="Article" ></table>
+        <table tableName="cms_file" domainObjectName="CMSFile" ></table>
+        <table tableName="cms_article_file" domainObjectName="ArticleCMSFile" ></table>
+        <table tableName="cms_user" domainObjectName="User" ></table>
+        <table tableName="cms_comment" domainObjectName="Comment" ></table>
+        <table tableName="cms_article" domainObjectName="Article" ></table>
+        -->
+        <!-- <table tableName="cms_category" domainObjectName="Category"></table> -->
+        <!-- <table tableName="cms_article" domainObjectName="Article"></table> -->
+        <!-- <table tableName="cms_roles_user" domainObjectName="RolesUser"></table> -->
+         <table tableName="cms_user" domainObjectName="User"></table>
+        <!-- <table tableName="cms_roles" domainObjectName="Roles"></table> -->
+<!--        <table tableName="cms_comment" domainObjectName="Comment"></table>-->
+        <!-- <table tableName="cms_article_file" domainObjectName="ArticleCMSFile"></table> -->
+        <!-- <table tableName="cms_file" domainObjectName="CMSFile"></table> -->
+
+        <!--
+            mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
+        -->
+
+    </context>
+</generatorConfiguration>
